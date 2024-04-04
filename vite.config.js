@@ -1,9 +1,11 @@
 import { defineConfig } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default defineConfig({
   server: {
-    port: 3000
+    port: process.env.POST || 3000
   },
   plugins: [
     VitePluginNode({
