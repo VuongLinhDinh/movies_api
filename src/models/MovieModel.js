@@ -1,7 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const MovieShechema = new mongoose.Schema(
   {
+    categories: {
+      type: Schema.Types.ObjectId,
+      ref: "categoríe",
+      required: true
+    },
+    genres: {
+      type: [Schema.Types.ObjectId],
+      ref: "genres",
+      required: true
+    },
     name: {
       type: String,
       required: true
@@ -13,9 +23,6 @@ const MovieShechema = new mongoose.Schema(
       type: String
     },
     cast: {
-      type: String
-    },
-    genre: {
       type: String
     },
     runingTime: {

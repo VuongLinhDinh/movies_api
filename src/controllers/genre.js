@@ -1,12 +1,12 @@
-import Movie from "../models/MovieModel";
+import Genre from "../models/GenreModel";
 
-export default class MoviesController {
-  async getAllMovies(req, res) {
+export default class GenresController {
+  async getAllGenres(req, res) {
     try {
-      const movies = await Movie.find().populate(["categories", "genres"]);
+      const genres = await Genre.find();
       return res.status(200).json({
-        message: ">> GET MOVIES DONE",
-        data: movies
+        message: ">> GET Genres DONE",
+        data: genres
       });
     } catch (error) {
       return res.status(400).json({
@@ -14,20 +14,17 @@ export default class MoviesController {
       });
     }
   }
-  async getDetailMovie(req, res) {
+  async getDetailGenre(req, res) {
     try {
-      const movie = await Movie.findById(req.params.id).populate([
-        "categories",
-        "genres"
-      ]);
-      if (!movie) {
+      const genre = await Genre.findById(req.params.id);
+      if (!genre) {
         return res.status(400).json({
-          message: ">> This movies is undefind "
+          message: ">> This Genres is undefind "
         });
       }
       return res.status(200).json({
         message: ">> GET DETAIL DONE",
-        data: movie
+        data: genre
       });
     } catch (error) {
       return res.status(400).json({
@@ -35,12 +32,12 @@ export default class MoviesController {
       });
     }
   }
-  async createMovie(req, res) {
+  async createGenre(req, res) {
     try {
-      const movie = await Movie.create(req.body);
+      const genre = await Genre.create(req.body);
       return res.status(200).json({
-        message: ">> CREATE MOVIES DONE",
-        data: movie
+        message: ">> CREATE Genres DONE",
+        data: genre
       });
     } catch (error) {
       return res.status(400).json({
@@ -48,19 +45,19 @@ export default class MoviesController {
       });
     }
   }
-  async updateMovie(req, res) {
+  async updateGenre(req, res) {
     try {
-      const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+      const genre = await Genre.findByIdAndUpdate(req.params.id, req.body, {
         new: true
       });
-      if (!movie) {
+      if (!genre) {
         return res.status(400).json({
-          message: ">> This movies is undefind "
+          message: ">> This Genres is undefind "
         });
       }
       return res.status(200).json({
-        message: ">> UPDATE THIS MOVIES DONE",
-        data: movie
+        message: ">> UPDATE THIS Genres DONE",
+        data: Genre
       });
     } catch (error) {
       return res.status(400).json({
@@ -68,16 +65,16 @@ export default class MoviesController {
       });
     }
   }
-  async deleteMovie(req, res) {
+  async deleteGenre(req, res) {
     try {
-      const movie = await Movie.findByIdAndDelete(req.params.id);
-      if (!movie) {
+      const genre = await Genre.findByIdAndDelete(req.params.id);
+      if (!genre) {
         return res.status(400).json({
-          message: ">> This movies is undefind "
+          message: ">> This Genres is undefind "
         });
       }
       return res.status(200).json({
-        message: ">> DELETE MOVIES DONE"
+        message: ">> DELETE Genres DONE"
       });
     } catch (error) {
       return res.status(400).json({
