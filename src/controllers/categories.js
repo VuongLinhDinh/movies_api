@@ -30,6 +30,24 @@ export default class CategoriesController {
 
   async createCategory(req, res, next) {
     try {
+      // Validate the request body with Vietnamese messages
+      const { error } = Joi.object({
+        name: Joi.string().required().messages({
+          "any.required": "Tên danh mục là bắt buộc",
+          "string.empty": "Tên danh mục không được để trống"
+        }),
+        description: Joi.string().required().messages({
+          "any.required": "Mô tả là bắt buộc",
+          "string.empty": "Mô tả không được để trống"
+        }),
+        tags: Joi.string().optional()
+      }).validate(req.body, { abortEarly: false, allowUnknown: true });
+
+      if (error) {
+        const errors = error.details.map((err) => err.message);
+        throw new Error(errors.join(", "));
+      }
+
       const category = await Category.create(req.body);
       return res.status(200).json({
         message: ">> CREATE Categories DONE",

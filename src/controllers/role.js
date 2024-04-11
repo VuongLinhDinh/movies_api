@@ -1,5 +1,5 @@
 import Role from "../models/RoleModel";
-
+import Joi from "joi";
 class RoleController {
   async getAllRole(req, res, next) {
     try {
@@ -30,9 +30,23 @@ class RoleController {
 
   async createRole(req, res, next) {
     try {
+      // Validate the request body
+      const { error } = Joi.object({
+        name: Joi.string().required(),
+        description: Joi.string().required()
+      }).validate(req.body, { abortEarly: false });
+
+      if (error) {
+        const errors = error.details.map((err) => err.message);
+        throw new Error(errors.join(", "));
+      }
+
       const role = await Role.create(req.body);
+      if (!role) {
+        throw new Error("Failed to create role");
+      }
       return res.status(200).json({
-        message: "create role done",
+        message: ">> CREATE Role DONE",
         data: role
       });
     } catch (error) {

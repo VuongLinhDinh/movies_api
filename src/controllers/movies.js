@@ -1,6 +1,6 @@
 import ValidationError from "../errors/ValidationError";
 import Movie from "../models/MovieModel";
-
+import { moviesVallidate } from "../validations/moviesValidate";
 export default class MoviesController {
   async getAllMovies(req, res, next) {
     try {
@@ -67,6 +67,13 @@ export default class MoviesController {
 
   async createMovie(req, res, next) {
     try {
+      const { error } = moviesVallidate.validate(req.body, {
+        abortEarly: false
+      });
+      if (error) {
+        const errors = error.details.map((err) => err.message);
+        throw new Error(errors.join(", "));
+      }
       const movie = await Movie.create(req.body);
       if (!movie) {
         throw new Error("Failed to create movie");
