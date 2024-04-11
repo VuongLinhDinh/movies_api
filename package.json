@@ -17,5 +17,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.2",
     "vite-plugin-node": "^3.1.0"
+  },
+  "devDependencies": {
+    "express-async-errors": "^3.1.1"
   }
 }

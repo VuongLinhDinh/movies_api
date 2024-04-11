@@ -1,7 +1,8 @@
+import ValidationError from "../errors/ValidationError";
 import Movie from "../models/MovieModel";
 
 export default class MoviesController {
-  async getAllMovies(req, res) {
+  async getAllMovies(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
@@ -31,6 +32,10 @@ export default class MoviesController {
         .populate("genres")
         .sort({ releaseDate: -1 });
 
+      if (movies.length === 0) {
+        throw new Error("No movies found");
+      }
+
       return res.status(200).json({
         message: ">> GET MOVIES DONE",
         data: movies,
@@ -39,80 +44,70 @@ export default class MoviesController {
         totalPages: totalPages
       });
     } catch (error) {
-      return res.status(400).json({
-        message: ">> THE ERR: " + error.message
-      });
+      next(error);
     }
   }
 
-  async getDetailMovie(req, res) {
+  async getDetailMovie(req, res, next) {
     try {
       const movie = await Movie.findById(req.params.id)
         .populate("categories")
         .populate("genres");
       if (!movie) {
-        return res.status(400).json({
-          message: ">> This movies is undefind "
-        });
+        throw new Error("This movie is undefined");
       }
       return res.status(200).json({
         message: ">> GET DETAIL DONE",
         data: movie
       });
     } catch (error) {
-      return res.status(400).json({
-        message: ">> THE ERR: " + error.message
-      });
+      next(error);
     }
   }
-  async createMovie(req, res) {
+
+  async createMovie(req, res, next) {
     try {
       const movie = await Movie.create(req.body);
+      if (!movie) {
+        throw new Error("Failed to create movie");
+      }
       return res.status(200).json({
         message: ">> CREATE MOVIES DONE",
         data: movie
       });
     } catch (error) {
-      return res.status(400).json({
-        message: ">> THE ERR: " + error.message
-      });
+      next(error);
     }
   }
-  async updateMovie(req, res) {
+
+  async updateMovie(req, res, next) {
     try {
       const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
         new: true
       });
       if (!movie) {
-        return res.status(400).json({
-          message: ">> This movies is undefind "
-        });
+        throw new Error("This movie is undefined");
       }
       return res.status(200).json({
         message: ">> UPDATE THIS MOVIES DONE",
         data: movie
       });
     } catch (error) {
-      return res.status(400).json({
-        message: ">> THE ERR: " + error.message
-      });
+      next(error);
     }
   }
-  async deleteMovie(req, res) {
+
+  async deleteMovie(req, res, next) {
     try {
       const movie = await Movie.findByIdAndDelete(req.params.id);
       if (!movie) {
-        return res.status(400).json({
-          message: ">> This movies is undefind "
-        });
+        throw new Error("This movie is undefined");
       }
       return res.status(200).json({
         message: ">> DELETE MOVIES DONE"
       });
     } catch (error) {
-      return res.status(400).json({
-        message: ">> THE ERR: " + error.message
-      });
+      next(error);
     }
   }
 }
