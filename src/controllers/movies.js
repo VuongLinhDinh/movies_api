@@ -3,7 +3,9 @@ import Movie from "../models/MovieModel";
 export default class MoviesController {
   async getAllMovies(req, res) {
     try {
-      const movies = await Movie.find().populate(["categories", "genres"]);
+      const movies = await Movie.find()
+        .populate("categories")
+        .populate("genres");
       return res.status(200).json({
         message: ">> GET MOVIES DONE",
         data: movies
@@ -16,10 +18,9 @@ export default class MoviesController {
   }
   async getDetailMovie(req, res) {
     try {
-      const movie = await Movie.findById(req.params.id).populate([
-        "categories",
-        "genres"
-      ]);
+      const movie = await Movie.findById(req.params.id)
+        .populate("categories")
+        .populate("genres");
       if (!movie) {
         return res.status(400).json({
           message: ">> This movies is undefind "
