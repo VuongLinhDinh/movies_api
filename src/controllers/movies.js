@@ -3,12 +3,40 @@ import Movie from "../models/MovieModel";
 export default class MoviesController {
   async getAllMovies(req, res) {
     try {
-      const movies = await Movie.find()
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      let query = Movie.find();
+
+      // Tìm kiếm theo tên phim
+      if (req.query.search) {
+        const searchRegex = new RegExp(req.query.search, "i");
+        query = query.or([
+          { name: searchRegex },
+          { title: searchRegex },
+          { description: searchRegex },
+          { director: searchRegex },
+          { cast: searchRegex }
+        ]);
+      }
+
+      const totalMovies = await Movie.countDocuments(query);
+      const totalPages = Math.ceil(totalMovies / limit);
+
+      const movies = await query
+        .skip(skip)
+        .limit(limit)
         .populate("categories")
-        .populate("genres");
+        .populate("genres")
+        .sort({ releaseDate: -1 });
+
       return res.status(200).json({
         message: ">> GET MOVIES DONE",
-        data: movies
+        data: movies,
+        page: page,
+        limit: limit,
+        totalPages: totalPages
       });
     } catch (error) {
       return res.status(400).json({
@@ -16,6 +44,7 @@ export default class MoviesController {
       });
     }
   }
+
   async getDetailMovie(req, res) {
     try {
       const movie = await Movie.findById(req.params.id)

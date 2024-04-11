@@ -82,9 +82,9 @@ class AuthController {
       // Tạo mã thông báo JWT và bao gồm vai trò của người dùng trong mã thông báo
       const token = await jwt.sign(
         { id: user._id, role: user.role },
-        process.env.SECRETKEY,
+        process.env.SECRETKEY || "key",
         {
-          expiresIn: process.env.EXPIRESIN
+          expiresIn: "3h"
         }
       );
       return res.status(200).json({

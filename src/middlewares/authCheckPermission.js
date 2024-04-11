@@ -4,12 +4,14 @@ import jwt from "jsonwebtoken";
 const checkPermission = async (req, res, next) => {
   try {
     // console.log(req.headers.authorization?.split(" "));
-    const token = req.headers.authorization?.split(" ");
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({
         message: "No Auth"
       });
     }
+    console.log(token);
+    console.log(process.env.SECRETKEY);
     const data = jwt.verify(token, process.env.SECRETKEY);
     if (!data) {
       return res.status(401).json({
