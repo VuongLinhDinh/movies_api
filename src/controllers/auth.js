@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import Role from "../models/RoleModel";
 
 class AuthController {
-  async register(req, res) {
+  async register(req, res, next) {
     try {
       // validate
       const { error } = registerValidate.validate(req.body, {
@@ -13,24 +13,18 @@ class AuthController {
       });
       if (error) {
         const errors = error.details.map((err) => err.message);
-        return res.status(400).json({
-          message: errors
-        });
+        throw new Error(errors.join(", "));
       }
       // check email đã tồn tại
       const { username, email, password } = req.body;
       const checkemail = await User.findOne({ email });
       if (checkemail) {
-        return res.status(400).json({
-          message: "Email đã được sử dụng trước đó!!!"
-        });
+        throw new Error("Email đã được sử dụng trước đó!!!");
       }
       // Mặc định gán vai trò người dùng thông thường (có thể thay đổi tùy thuộc vào yêu cầu của bạn)
       const defaultRole = await Role.findOne({ rolekey: 0 | 1 }); // Giả sử rolekey của người dùng thông thường là 2
       if (!defaultRole) {
-        return res.status(500).json({
-          message: "Không tìm thấy vai trò mặc định"
-        });
+        throw new Error("Không tìm thấy vai trò mặc định");
       }
       // mã hóa mật khẩu
       const hashPassword = await bcryptjs.hash(password, 10);
@@ -46,13 +40,11 @@ class AuthController {
         data: { ...user.toObject(), password: undefined }
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error); // Sử dụng next để chuyển lỗi đến middleware xử lý lỗi
     }
   }
 
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       // validate
       const { error } = loginValidate.validate(req.body, {
@@ -60,24 +52,18 @@ class AuthController {
       });
       if (error) {
         const errors = error.details.map((err) => err.message);
-        return res.status(400).json({
-          message: errors
-        });
+        throw new Error(errors.join(", "));
       }
       // check email đã tồn tại
       const { email, password } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({
-          message: "Tài khoản không tồn tại!!"
-        });
+        throw new Error("Tài khoản không tồn tại!!");
       }
       // xác minh mật khẩu
       const checkLogin = await bcryptjs.compare(password, user.password);
       if (!checkLogin) {
-        return res.status(400).json({
-          message: "Mật khẩu không chính xác!!"
-        });
+        throw new Error("Mật khẩu không chính xác!!");
       }
       // Tạo mã thông báo JWT và bao gồm vai trò của người dùng trong mã thông báo
       const token = await jwt.sign(
@@ -93,9 +79,7 @@ class AuthController {
         token: token
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error); // Sử dụng next để chuyển lỗi đến middleware xử lý lỗi
     }
   }
 }

@@ -1,7 +1,7 @@
 import Role from "../models/RoleModel";
 
 class RoleController {
-  async getAllRole(req, res) {
+  async getAllRole(req, res, next) {
     try {
       const roles = await Role.find();
       return res.status(200).json({
@@ -9,77 +9,65 @@ class RoleController {
         data: roles
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error);
     }
   }
-  async getDetailRole(req, res) {
+
+  async getDetailRole(req, res, next) {
     try {
       const role = await Role.findById(req.params.id);
+      if (!role) {
+        throw new Error("Role không tồn tại");
+      }
       return res.status(200).json({
         message: "get detail done",
         data: role
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error);
     }
   }
-  async createRole(req, res) {
+
+  async createRole(req, res, next) {
     try {
       const role = await Role.create(req.body);
-      if (!role) {
-        return res.status(400).json({
-          message: "role không tồn tại"
-        });
-      }
       return res.status(200).json({
         message: "create role done",
         data: role
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error);
     }
   }
-  async updateRole(req, res) {
+
+  async updateRole(req, res, next) {
     try {
       const role = await Role.findByIdAndUpdate(req.params.id, req.body, {
         new: true
       });
       if (!role) {
-        return res.status(400).json({
-          message: "role không tồn tại"
-        });
+        throw new Error("Role không tồn tại");
       }
       return res.status(200).json({
         message: "update role done",
         data: role
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error);
     }
   }
-  async deleteRole(req, res) {
+
+  async deleteRole(req, res, next) {
     try {
       const role = await Role.findByIdAndDelete(req.params.id);
       if (!role) {
-        return res.status(400).json({
-          message: "role không tồn tại"
-        });
+        throw new Error("Role không tồn tại");
       }
       return res.status(200).json({
         message: "delete role done"
       });
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      next(error);
     }
   }
 }
