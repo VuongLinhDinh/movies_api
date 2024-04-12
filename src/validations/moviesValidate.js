@@ -17,7 +17,7 @@ const moviesVallidate = Joi.object({
   poster: Joi.string().optional(),
   director: Joi.string().optional(),
   cast: Joi.string().optional(),
-  runningTime: Joi.number().optional(),
+  runingTime: Joi.string().optional(),
   language: Joi.string().optional(),
   rated: Joi.number().optional(),
   trailer: Joi.string().optional(),

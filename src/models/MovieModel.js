@@ -26,7 +26,7 @@ const MovieShechema = new mongoose.Schema(
       type: String
     },
     runingTime: {
-      type: Number
+      type: String
     },
     language: {
       type: String

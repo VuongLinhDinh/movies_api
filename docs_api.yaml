@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
+  title: Write api for movies project - PH38932
   description: |-
     This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
     Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
@@ -24,7 +24,38 @@ externalDocs:
   url: http://swagger.io
 servers:
   - url: https://petstore3.swagger.io/api/v3
+  - url: http://localhost:8000/api
 tags:
+  - name: auth
+    description: Operations related to authentication and authorization.
+    externalDocs:
+      description: Learn more about authentication and authorization.
+      url: http://localhost:8000/api/auth
+
+  - name: categories
+    description: Operations related to managing movie categories.
+    externalDocs:
+      description: Learn more about movie categories.
+      url: http://localhost:8000/api/categories
+
+  - name: genres
+    description: Operations related to managing movie genres.
+    externalDocs:
+      description: Learn more about movie genres.
+      url: http://localhost:8000/api/genres
+
+  - name: movies
+    description: Operations related to managing movies.
+    externalDocs:
+      description: Learn more about managing movies.
+      url: http://localhost:8000/api/movies
+
+  - name: roles
+    description: Operations related to managing user roles and permissions.
+    externalDocs:
+      description: Learn more about user roles and permissions.
+      url: http://localhost:8000/api/roles
+
   - name: pet
     description: Everything about your Pets
     externalDocs:
@@ -38,15 +69,15 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /pet:
+  /categories:
     put:
       tags:
-        - pet
-      summary: Update an existing pet
-      description: Update an existing pet by Id
-      operationId: updatePet
+        - categories
+      summary: Update an existing categories
+      description: Update an existing categories by Id
+      operationId: updatecategories
       requestBody:
-        description: Update an existent pet in the store
+        description: Update an existent categories in the store
         content:
           application/json:
             schema:
