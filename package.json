@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "api movies",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
