@@ -22,9 +22,16 @@ class AuthController {
         throw new Error("Email đã được sử dụng trước đó!!!");
       }
       // Mặc định gán vai trò người dùng thông thường (có thể thay đổi tùy thuộc vào yêu cầu của bạn)
-      const defaultRole = await Role.findOne({ rolekey: 0 | 1 }); // Giả sử rolekey của người dùng thông thường là 2
+      const defaultRole = await Role.findOne({ rolekey: 0 });
       if (!defaultRole) {
-        throw new Error("Không tìm thấy vai trò mặc định");
+        throw new Error("Không tìm thấy vai trò mặc định với rolekey 0");
+      }
+      if (!defaultRole) {
+        const defaultRole1 = await Role.findOne({ rolekey: 1 });
+        if (!defaultRole1) {
+          throw new Error("Không tìm thấy vai trò mặc định");
+        }
+        defaultRole = defaultRole1;
       }
       // mã hóa mật khẩu
       const hashPassword = await bcryptjs.hash(password, 10);

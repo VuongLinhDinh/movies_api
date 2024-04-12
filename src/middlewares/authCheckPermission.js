@@ -14,9 +14,11 @@ const checkPermission = async (req, res, next) => {
       throw new Error("No Authorization");
     }
     const user = await User.findById(data.id).populate("role");
+    console.log(user);
     if (!user) {
       throw new Error("Not Found");
     }
+    console.log(user.role.rolekey);
     if (user.role.rolekey === 1) {
       next();
     } else {
